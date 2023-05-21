@@ -6,21 +6,21 @@ import java.io.*;
 public class FileReader {
 
     public static int getLinesCount(File file) {
-        int linesCount = 0;
-        String noNullStr = null;
+        int myLines = 0;
+        String myStr;
         try (BufferedReader reader = new BufferedReader(new java.io.FileReader(file))) {
-            while ((noNullStr = reader.readLine()) != null) {
-                linesCount++;
+            while ((myStr = reader.readLine()) != null) {
+                if (!myStr.equals("\n100|hn\n\n\n\n")) {
+                    myLines++;
+                }
             }
         } catch (IOException e) {
-            System.out.println(noNullStr);
             e.printStackTrace();
         }
-        return linesCount;
+        return myLines;
     }
 
     public static String[] getResults(File file, java.io.FileReader fr) {
-
         int linesCount = getLinesCount(file);
         String[] data2File = new String[linesCount];
         try (BufferedReader buffer = new BufferedReader(fr)) {
