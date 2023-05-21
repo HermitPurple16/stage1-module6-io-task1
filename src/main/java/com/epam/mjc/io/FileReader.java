@@ -5,21 +5,30 @@ import java.io.*;
 
 public class FileReader {
 
+    public static int getLinesCount(File file) {
+        int linesCount = 0;
+
+        try (BufferedReader reader = new BufferedReader(new java.io.FileReader(file))) {
+            String noNullStr = null;
+            while ((noNullStr = reader.readLine()) != null) {
+                linesCount++;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return linesCount;
+    }
+
     public Profile getDataFromFile(File file) {
 
         String[] dataArr = new String[4];
-
+        java.io.FileReader fr = null;
+        BufferedReader buffer = null;
         try {
-            java.io.FileReader fr = new java.io.FileReader(file);
-            BufferedReader buffer = new BufferedReader(fr);
+            fr = new java.io.FileReader(file);
+            buffer = new BufferedReader(fr);
 
-            int linesCount = 0;
-
-            try (BufferedReader reader = new BufferedReader(new java.io.FileReader(file))) {
-                while (reader.readLine() != null) linesCount++;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            int linesCount = getLinesCount(file);
 
             String[] data2File = new String[linesCount];
             for (int i = 0; i < linesCount; i++) {
@@ -28,15 +37,20 @@ public class FileReader {
 
                     if (data2File[i].charAt(h) == ':' && data2File[i].charAt(h + 1) == ' ') {
                         data2File[i] = data2File[i].substring(h + 2);
-                        h = data2File[i].length() + 1;
+                        break;
                     }
                 }
             }
             dataArr = data2File;
-            fr.close();
-            buffer.close();
         } catch (IOException e) {
-            System.out.println("IOException");
+            e.printStackTrace();
+        } finally {
+            try {
+                fr.close();
+                buffer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return new Profile(dataArr[0],
                 Integer.parseInt(dataArr[1]),
